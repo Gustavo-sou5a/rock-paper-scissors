@@ -24,7 +24,6 @@ let computerScore = INITIAL_POINTS;
 function playRound(humanChoice, computerChoice) {
     if (humanChoice === computerChoice) {
         addInformationMessage("Tie! Try again");
-        // playRound(getHumanChoice(), getComputerChoice());
     }
     else {
         if (humanChoice === "rock") {
