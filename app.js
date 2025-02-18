@@ -18,62 +18,75 @@ function getComputerChoice() {
     return choice;
 }
 
-function getHumanChoice() {
-    let choice = prompt("Rock, Paper or Scissors: ").toLowerCase();
-    while (choice !== "rock" && choice !== "paper" && choice !== "scissors") {
-        choice = prompt("Not a valid option! Rock, Paper or Scissors: ").toLowerCase();
+let humanScore = INITIAL_POINTS;
+let computerScore = INITIAL_POINTS;
+
+function playRound(humanChoice, computerChoice) {
+    if (humanChoice === computerChoice) {
+        addInformationMessage("Tie! Try again");
+        // playRound(getHumanChoice(), getComputerChoice());
     }
-    return choice;
-}
-
-function playGame() {
-    let humanScore = INITIAL_POINTS;
-    let computerScore = INITIAL_POINTS;
-
-    function playRound(humanChoice, computerChoice) {
-        if (humanChoice === computerChoice) {
-            alert("Tie! Try again");
-            playRound(getHumanChoice(), getComputerChoice());
+    else {
+        if (humanChoice === "rock") {
+            if (computerChoice == "scissors") {
+                addInformationMessage(WIN_MESSAGE + " Rock beats Scissors");
+                humanScore++;
+            }
+            else { // computerChoice === "paper"
+                addInformationMessage(LOSE_MESSAGE + " Paper beats Rock");
+                computerScore++;
+            }
         }
-        else {
-            if (humanChoice === "rock") {
-                if (computerChoice == "scissors") {
-                    alert(WIN_MESSAGE + " Rock beats Scissors");
-                    humanScore++;
-                }
-                else { // computerChoice === "paper"
-                    alert(LOSE_MESSAGE + " Paper beats Rock");
-                    computerScore++;
-                }
+        else if (humanChoice === "paper") {
+            if (computerChoice == "rock") {
+                addInformationMessage(WIN_MESSAGE + " Paper beats Rock");
+                humanScore++;
             }
-            else if (humanChoice === "paper") {
-                if (computerChoice == "rock") {
-                    alert(WIN_MESSAGE + " Paper beats Rock");
-                    humanScore++;
-                }
-                else { // computerChoice === "scissors"
-                    alert(LOSE_MESSAGE + " Scissors beats Paper");
-                    computerScore++;
-                }
+            else { // computerChoice === "scissors"
+                addInformationMessage(LOSE_MESSAGE + " Scissors beats Paper");
+                computerScore++;
             }
-            else { // humanChoice === "scissors"
-                if (computerChoice == "paper") {
-                    alert(WIN_MESSAGE + " Scissors beats Paper");
-                    humanScore++;
-                }
-                else { // computerChoice === "rock"
-                    alert(LOSE_MESSAGE + " Rock beats Scissors");
-                    computerScore++;
-                }
+        }
+        else { // humanChoice === "scissors"
+            if (computerChoice == "paper") {
+                addInformationMessage(WIN_MESSAGE + " Scissors beats Paper");
+                humanScore++;
             }
-        } 
-    }
-    for (let i = 0; i < NUM_ROUNDS; i++) {
-        let humanSelection = getHumanChoice();
-        let computerSelection = getComputerChoice();
-        playRound(humanSelection, computerSelection);
-    }
-    (humanScore > computerScore) ? alert("You won the game!") : alert("You lost the game!");
+            else { // computerChoice === "rock"
+                addInformationMessage(LOSE_MESSAGE + " Rock beats Scissors");
+                computerScore++;
+            }
+        }
+    } 
 }
 
-playGame();
+const buttons = document.querySelectorAll("button");
+const score = document.querySelector("div p");
+
+buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+        if (humanScore < 5 && computerScore < 5) {
+            playRound(button.id, getComputerChoice());
+            score.textContent = `Player ${humanScore} - ${computerScore} Computer`;
+            if (humanScore === 5 || computerScore === 5)
+                endGame();
+        }
+    });
+});
+
+function endGame() {
+    const winner = document.createElement("div");
+    winner.style.marginTop = "50px";
+    winner.style.fontSize = "25px";
+    winner.textContent = (humanScore > computerScore) ? "You won!" : "You lost!";
+    const body = document.querySelector("body");
+    body.appendChild(winner);
+}
+
+
+function addInformationMessage(message) {
+    const div = document.createElement("div");
+    div.textContent = message;
+    const body = document.querySelector("body");
+    body.appendChild(div);
+}
